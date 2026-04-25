@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin - NexaHub</title>
+    <link rel="stylesheet" href="../../assets/css/theme.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">NexaHub</a>
+            <ul class="navbar-menu">
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="users.html" class="active">User Management</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="reports.html">Reports & Analytics</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </aside>
+    <main class="main-content">
+        <h1>User Management</h1>
+        <p style="color: var(--gray-text);">Manage all users across the platform</p>
+        <button class="btn btn-primary mt-20">Add New User</button>
+    </main>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

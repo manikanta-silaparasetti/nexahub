@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NexaHub</title>
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d0d0b;
+            color: #f0ebe0;
+            font-family: Calibri, sans-serif;
+            padding: 20px;
+        }
+
+        .login-panel {
+            width: 100%;
+            max-width: 640px;
+            background: #161612;
+            border: 1px solid rgba(201, 168, 76, 0.15);
+            border-radius: 18px;
+            padding: 38px;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .login-sub {
+            margin: 6px 0 24px;
+            color: #7a7a6e;
+            font-size: 1.05rem;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .role-card {
+            background: #1f1f1a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            height: 82px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #7a7a6e;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .role-card:hover,
+        .role-card.active {
+            border-color: #c9a84c;
+            color: #c9a84c;
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .role-icon {
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.78rem;
+            color: #7a7a6e;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #0f0f0d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 7px;
+            color: #f0ebe0;
+            padding: 13px 14px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #c9a84c;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 7px;
+            padding: 14px;
+            margin-top: 6px;
+            background: #c9a84c;
+            color: #000;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .footer-line {
+            text-align: center;
+            margin: 18px 0 0;
+            font-size: 0.95rem;
+        }
+
+        .footer-line a {
+            color: #c9a84c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 640px) {
+            .login-panel {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-panel">
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-sub">Select your role to access your dashboard</p>
+
+        <form id="loginForm">
+            <input type="hidden" id="role" required>
+
+            <div class="role-grid">
+                <button class="role-card" type="button" data-role="pg-owner"><span class="role-icon">🏢</span>PG Owner</button>
+                <button class="role-card" type="button" data-role="tenant"><span class="role-icon">🏨</span>Tenant</button>
+                <button class="role-card" type="button" data-role="parent"><span class="role-icon">👨‍👩‍👧</span>Parent</button>
+                <button class="role-card" type="button" data-role="teacher"><span class="role-icon">👩‍🏫</span>Teacher</button>
+                <button class="role-card" type="button" data-role="student"><span class="role-icon">🎒</span>Student</button>
+                <button class="role-card" type="button" data-role="admin"><span class="role-icon">⚙️</span>Admin/Director</button>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>Continue to Dashboard →</button>
+        </form>
+
+        <p class="footer-line">Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+
+    <script>
+        const roleRedirectMap = {
+            'pg-owner': 'pages/pg-owner/dashboard.html',
+            tenant: 'pages/tenant/dashboard.html',
+            student: 'pages/student/dashboard.html',
+            teacher: 'pages/teacher/dashboard.html',
+            parent: 'pages/parent/dashboard.html',
+            admin: 'pages/admin/dashboard.html'
+        };
+
+        const roleInput = document.getElementById('role');
+        const submitBtn = document.getElementById('submitBtn');
+        const roleCards = document.querySelectorAll('.role-card');
+
+        roleCards.forEach((card) => {
+            card.addEventListener('click', () => {
+                roleCards.forEach((item) => item.classList.remove('active'));
+                card.classList.add('active');
+                roleInput.value = card.getAttribute('data-role');
+                submitBtn.disabled = false;
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const role = roleInput.value;
+            const redirectPath = roleRedirectMap[role];
+            if (redirectPath) {
+                window.location.href = redirectPath;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.example
+package.json
+package-lock.json
+archive_non_frontend/
+backend/
+database/
+docs/
+*.log
+Development.docx
+Development.pdf
+"project by akash sir .html"
+README.md

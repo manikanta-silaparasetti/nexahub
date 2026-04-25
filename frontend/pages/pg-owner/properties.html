@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties - PG Owner - NexaHub</title>
+    <link rel="stylesheet" href="../../assets/css/theme.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+</head>
+<body>
+    <!-- Navbar (copy from dashboard.html) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">NexaHub</a>
+            <ul class="navbar-menu">
+                <li><a href="#" id="userDisplay">PG Owner</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="properties.html" class="active">My Properties</a></li>
+            <li><a href="rooms.html">Rooms</a></li>
+            <li><a href="tenants.html">Tenants</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="reports.html">Reports</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1>My Properties</h1>
+        <p style="color: var(--gray-text);">Manage your PG properties here</p>
+        <button class="btn btn-primary mt-20">Add New Property</button>
+        
+        <div id="propertiesList" class="mt-20">
+            <!-- Properties will be loaded here -->
+        </div>
+    </main>
+
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

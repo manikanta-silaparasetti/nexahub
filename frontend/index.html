@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexaHub – The All-In-One Platform for Modern Student Housing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────── */
+:root{
+  --black:#0d0d0b;--dark:#141410;--card:#1a1a16;--card2:#1f1f1a;
+  --gold:#c9a84c;--gold-light:#e2bf6e;--gold-dim:#8a6f32;
+  --white:#f0ebe0;--muted:#7a7a6e;
+  --border:rgba(201,168,76,0.15);--border2:rgba(255,255,255,0.06);
+  --font-head:'Cormorant Garamond',Georgia,serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:15px;line-height:1.6;overflow-x:hidden;}
+
+/* ─── LOADER ────────────────────────────────────────── */
+#loader{position:fixed;inset:0;z-index:99999;background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s ease,visibility .6s ease;}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-word{font-family:var(--font-head);font-size:2.8rem;font-weight:700;letter-spacing:8px;color:var(--gold);}
+.loader-line{width:0;height:1px;background:var(--gold);transition:width 1.2s ease;}
+.loader-line.grow{width:180px;}
+.loader-sub{font-family:var(--font-body);font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);opacity:0;transition:opacity .8s ease .4s;}
+.loader-sub.show{opacity:1;}
+
+/* ─── SCROLL PROGRESS ───────────────────────────────── */
+#scroll-bar{position:fixed;top:0;left:0;width:0%;height:2px;background:var(--gold);z-index:10000;box-shadow:0 0 8px var(--gold);transition:width .05s linear;}
+
+/* ─── NAVBAR ─────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:transparent;border-bottom:1px solid transparent;transition:background .35s,border-color .35s,backdrop-filter .35s;}
+nav.scrolled{background:rgba(13,13,11,0.97);backdrop-filter:blur(18px);border-bottom-color:var(--border);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-family:var(--font-body);font-size:1.15rem;font-weight:700;color:var(--white);letter-spacing:3px;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:400;position:relative;padding-bottom:3px;transition:color .2s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--gold);transition:width .25s ease;}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{width:100%;}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.btn-outline{border:1px solid var(--gold);color:var(--gold);background:transparent;padding:7px 18px;border-radius:4px;cursor:pointer;font-family:var(--font-body);font-size:.85rem;font-weight:500;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-outline:hover{background:var(--gold);color:#000;}
+.btn-gold{background:var(--gold);color:#000;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-body);font-size:.85rem;font-weight:700;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-gold:hover{background:var(--gold-light);}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* Mobile menu overlay */
+.mobile-menu{display:none;position:fixed;inset:0;z-index:998;background:rgba(10,10,8,0.98);flex-direction:column;align-items:center;justify-content:center;gap:32px;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:var(--white);text-decoration:none;font-family:var(--font-head);font-size:2rem;font-weight:700;letter-spacing:2px;transition:color .2s;}
+.mobile-menu a:hover{color:var(--gold);}
+.mobile-menu .m-cta{margin-top:10px;background:var(--gold);color:#000;padding:12px 36px;border-radius:5px;font-family:var(--font-body);font-size:1rem;font-weight:700;text-decoration:none;}
+
+/* ─── HERO ───────────────────────────────────────────── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 80px;background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(201,168,76,0.07) 0%,transparent 70%);position:relative;overflow:hidden;}
+/* noise texture */
+.hero::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+/* grid overlay */
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c9a84c' fill-opacity='0.025'%3E%3Crect x='28' y='0' width='4' height='60'/%3E%3Crect x='0' y='28' width='60' height='4'/%3E%3C/g%3E%3C/svg%3E");}
+/* pulsing orb */
+.hero-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none;animation:orb-pulse 4s ease-in-out infinite;}
+@keyframes orb-pulse{0%,100%{transform:translate(-50%,-60%) scale(1);opacity:.6;}50%{transform:translate(-50%,-60%) scale(1.15);opacity:1;}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:rgba(201,168,76,0.07);padding:5px 16px;border-radius:999px;font-size:.78rem;color:var(--gold);margin-bottom:28px;position:relative;z-index:2;animation:float 3.5s ease-in-out infinite,fadeUp .7s ease both;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+.hero h1{font-family:var(--font-head);font-size:clamp(2.8rem,6vw,5.2rem);font-weight:700;line-height:1.05;color:var(--white);position:relative;z-index:2;animation:fadeUp .7s .12s ease both;}
+.hero h1 .gold-word{color:var(--gold);position:relative;display:inline-block;}
+.hero h1 .gold-word::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:underline-in 1s .9s ease forwards;}
+@keyframes underline-in{to{width:100%;}}
+
+.hero-sub{max-width:580px;color:var(--muted);font-size:1rem;font-weight:300;margin:20px auto 36px;position:relative;z-index:2;animation:fadeUp .7s .24s ease both;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;animation:fadeUp .7s .36s ease both;}
+.btn-hero-gold{background:var(--gold);color:#000;border:none;padding:13px 32px;border-radius:5px;cursor:pointer;font-family:var(--font-body);font-size:.95rem;font-weight:700;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-hero-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+.btn-hero-outline{border:1px solid rgba(240,235,224,0.25);color:var(--white);background:transparent;padding:13px 32px;border-radius:5px;cursor:pointer;font-family:var(--font-body);font-size:.95rem;font-weight:400;transition:all .25s;}
+.btn-hero-outline:hover{border-color:var(--gold);color:var(--gold);}
+
+/* scroll indicator */
+.scroll-indicator{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2;animation:fadeUp .7s .6s ease both;}
+.scroll-indicator span{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.mouse-icon{width:20px;height:32px;border:2px solid rgba(201,168,76,0.4);border-radius:10px;display:flex;justify-content:center;padding-top:5px;}
+.mouse-wheel{width:3px;height:6px;background:var(--gold);border-radius:999px;animation:scroll-wheel 1.6s ease infinite;}
+@keyframes scroll-wheel{0%{transform:translateY(0);opacity:1;}80%{transform:translateY(10px);opacity:0;}100%{transform:translateY(0);opacity:0;}}
+
+/* ─── STATS ROW ─────────────────────────────────────── */
+.stats-row{display:flex;flex-wrap:wrap;justify-content:center;border:1px solid var(--border);border-radius:10px;background:var(--card);overflow:hidden;margin-top:52px;max-width:700px;width:100%;position:relative;z-index:2;animation:fadeUp .7s .5s ease both;}
+.stat-item{flex:1;min-width:140px;padding:26px 18px;text-align:center;border-right:1px solid var(--border);cursor:default;transition:background .3s;}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:rgba(201,168,76,0.04);}
+.stat-item .num{font-family:var(--font-head);font-size:2rem;color:var(--gold);font-weight:700;line-height:1;}
+.stat-item .lbl{color:var(--muted);font-size:.72rem;margin-top:4px;font-weight:300;}
+
+/* ─── SECTIONS ──────────────────────────────────────── */
+section{padding:80px 5%;}
+.section-label{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.section-title{font-family:var(--font-head);font-size:clamp(2rem,3.5vw,3rem);font-weight:700;line-height:1.15;margin-bottom:14px;}
+.section-sub{color:var(--muted);max-width:500px;font-size:.92rem;font-weight:300;}
+.center{text-align:center;}
+.center .section-sub{margin:0 auto;}
+
+/* ─── SOLUTION CARDS ────────────────────────────────── */
+.for-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:40px;}
+.for-card{background:var(--card);border:1px solid var(--border2);border-top:2px solid transparent;border-radius:10px;padding:28px;transition:all .35s;position:relative;}
+.for-card:hover{border-top-color:var(--gold);transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(201,168,76,0.1);}
+.for-card-icon{width:44px;height:44px;background:rgba(201,168,76,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:14px;}
+.for-card h3{font-size:1.05rem;font-weight:700;margin-bottom:10px;color:var(--gold-light);}
+.for-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.for-card ul li{color:var(--muted);font-size:.8rem;display:flex;align-items:flex-start;gap:7px;font-weight:300;}
+.for-card ul li::before{content:'✦';color:var(--gold);font-size:.5rem;margin-top:5px;flex-shrink:0;}
+
+/* ─── FEATURE CARDS ─────────────────────────────────── */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:14px;margin-top:40px;}
+.feat-card{background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:22px 18px;transition:all .3s;}
+.feat-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:inset 0 0 24px rgba(201,168,76,0.06),0 8px 24px rgba(0,0,0,0.35);}
+.feat-icon{font-size:1.6rem;margin-bottom:10px;}
+.feat-card h4{font-size:.88rem;font-weight:700;margin-bottom:5px;color:var(--white);}
+.feat-card p{color:var(--muted);font-size:.75rem;font-weight:300;}
+
+/* ─── ECO CARDS ─────────────────────────────────────── */
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:40px;}
+.eco-card{background:var(--card);border:1px solid var(--border2);border-radius:10px;overflow:hidden;transition:all .35s;}
+.eco-card:hover{border-color:var(--gold);transform:translateY(-5px);box-shadow:0 0 28px rgba(201,168,76,0.12),0 12px 32px rgba(0,0,0,0.4);}
+.eco-phone{background:linear-gradient(135deg,#1e1e14,#0e0e09);height:160px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;position:relative;}
+.eco-phone::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(201,168,76,0.07),transparent 70%);}
+.eco-body{padding:18px;}
+.eco-body h4{font-size:.95rem;font-weight:700;color:var(--gold-light);margin-bottom:5px;}
+.eco-body p{color:var(--muted);font-size:.76rem;margin-bottom:9px;font-weight:300;}
+.eco-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.eco-tag{font-size:.62rem;padding:2px 7px;border-radius:999px;background:rgba(201,168,76,0.08);border:1px solid var(--border);color:var(--gold);}
+
+/* ─── PRICING ───────────────────────────────────────── */
+.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:14px;margin:26px 0;}
+.toggle-label{color:var(--muted);font-size:.88rem;cursor:pointer;font-weight:400;transition:color .2s;}
+.toggle-label.active{color:var(--gold);font-weight:700;}
+.toggle-switch{width:52px;height:28px;background:var(--card);border:1px solid var(--border);border-radius:999px;position:relative;cursor:pointer;transition:background .3s,box-shadow .3s;}
+.toggle-switch.on{background:var(--gold);box-shadow:0 0 12px rgba(201,168,76,0.4);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;background:var(--white);border-radius:50%;transition:transform .3s,box-shadow .3s;}
+.toggle-switch.on .toggle-knob{transform:translateX(24px);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:18px;margin-top:8px;}
+.plan-card{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:30px;position:relative;transition:all .3s;}
+.plan-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.35);}
+.plan-card.featured{border-color:var(--gold);background:linear-gradient(135deg,#1c1c14,#111109);}
+.plan-name{font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.plan-price{font-family:var(--font-head);font-size:2.4rem;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;}
+.plan-price span{font-size:.82rem;color:var(--muted);font-family:var(--font-body);}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:20px;}
+.plan-features li{display:flex;align-items:flex-start;gap:8px;font-size:.77rem;color:var(--muted);font-weight:300;}
+.plan-features li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;}
+.btn-plan{width:100%;padding:10px;border-radius:5px;cursor:pointer;font-family:var(--font-body);font-weight:700;font-size:.86rem;transition:all .2s;}
+.btn-plan-outline{background:transparent;border:1px solid var(--gold);color:var(--gold);}
+.btn-plan-outline:hover{background:var(--gold);color:#000;}
+.btn-plan-gold{background:var(--gold);border:none;color:#000;}
+.btn-plan-gold:hover{background:var(--gold-light);}
+
+/* ─── MODAL ─────────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#161612;border:1px solid var(--border);border-radius:14px;width:90%;max-width:640px;padding:38px;position:relative;}
+.modal-close{position:absolute;top:13px;right:16px;font-size:1.1rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .2s;}
+.modal-close:hover{color:var(--gold);}
+.modal h2{font-family:var(--font-head);font-size:2.2rem;font-weight:700;margin-bottom:4px;}
+.modal-sub{color:var(--muted);font-size:.95rem;margin-bottom:22px;font-weight:300;}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px;}
+.role-btn{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:12px 8px;cursor:pointer;text-align:center;font-family:var(--font-body);font-size:.95rem;font-weight:600;color:var(--muted);transition:all .2s;height:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.role-btn:hover,.role-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.07);}
+.role-btn .r-icon{font-size:1.3rem;display:block;margin-bottom:3px;}
+.form-group{margin-bottom:13px;}
+.form-group label{display:block;font-size:.88rem;color:var(--muted);margin-bottom:5px;font-weight:400;}
+.form-group input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:12px;color:var(--white);font-family:var(--font-body);font-size:1rem;outline:none;transition:border-color .2s;}
+.form-group input:focus{border-color:var(--gold);}
+.btn-login-submit{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:7px;font-family:var(--font-body);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px;}
+.btn-login-submit:hover{background:var(--gold-light);}
+
+/* ─── FOOTER ─────────────────────────────────────────── */
+footer{background:var(--dark);border-top:1px solid var(--border);padding:52px 5% 26px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:36px;}
+.footer-brand p{color:var(--muted);font-size:.76rem;margin-top:9px;max-width:230px;line-height:1.7;font-weight:300;}
+.footer-col h5{font-size:.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-col ul li a{color:var(--muted);text-decoration:none;font-size:.76rem;transition:color .2s;font-weight:300;}
+.footer-col ul li a:hover{color:var(--gold);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-bottom p{color:var(--muted);font-size:.7rem;}
+
+/* ─── SCROLL REVEAL ─────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+}
+@media(max-width:700px){
+  .role-grid{grid-template-columns:1fr;}
+  .modal{padding:24px;}
+  .stats-row{flex-direction:column;}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);}
+  .stat-item:last-child{border-bottom:none;}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-word">NexaHub</div>
+  <div class="loader-line" id="loaderLine"></div>
+  <div class="loader-sub" id="loaderSub">Your unified platform</div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-bar"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#solutions" onclick="closeMobile()">Solutions</a>
+  <a href="#features" onclick="closeMobile()">Features</a>
+  <a href="#pricing" onclick="closeMobile()">Pricing</a>
+  <a href="login.html" class="m-cta">Get Started Free</a>
+</div>
+
+<nav id="mainNav">
+  <a href="#" class="logo">
+    <div class="logo-icon"><svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="55" width="14" height="30" rx="1" stroke="#c9a84c" stroke-width="4"/><rect x="8" y="42" width="18" height="13" rx="1" stroke="#c9a84c" stroke-width="4"/><line x1="14" y1="55" x2="14" y2="85" stroke="#c9a84c" stroke-width="2"/><rect x="43" y="25" width="14" height="60" rx="1" stroke="#c9a84c" stroke-width="4"/><line x1="50" y1="25" x2="50" y2="85" stroke="#c9a84c" stroke-width="2"/><rect x="76" y="40" width="14" height="45" rx="1" stroke="#c9a84c" stroke-width="4"/><line x1="83" y1="40" x2="83" y2="85" stroke="#c9a84c" stroke-width="2"/><rect x="60" y="52" width="16" height="33" rx="1" stroke="#c9a84c" stroke-width="4"/><line x1="10" y1="85" x2="90" y2="85" stroke="#c9a84c" stroke-width="4"/><polygon points="50,8 38,25 62,25" stroke="#c9a84c" stroke-width="3" fill="none" stroke-linejoin="round"/></svg></div>
+    <span class="logo-text">NexaHub</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#vision">Vision</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-outline">Log In</a>
+    <a href="login.html" class="btn-gold">Get Started Free</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-orb"></div>
+  <div class="hero-badge">🏢 All-In-One Platform for Modern Living</div>
+  <h1>The All-In-One Platform for<br><span class="gold-word">Modern Housing</span></h1>
+  <p class="hero-sub">NexaHub bridges the gap between coaching centres, PG owners, and residents. We eliminate manual paperwork and fragmented communication, offering a unified dashboard to manage properties, track occupancy, and provide a world-class living experience.</p>
+  <div class="hero-btns">
+    <a href="login.html" class="btn-hero-gold">Start Free Today →</a>
+    <button class="btn-hero-outline" onclick="document.getElementById('solutions').scrollIntoView({behavior:'smooth'})">Explore Features</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-item"><div class="num" data-target="2500" data-suffix="+">0</div><div class="lbl">Properties Managed</div></div>
+    <div class="stat-item"><div class="num" data-target="18000" data-suffix="+">0</div><div class="lbl">Students &amp; Tenants</div></div>
+    <div class="stat-item"><div class="num" data-target="950" data-suffix="+">0</div><div class="lbl">Institutes Onboarded</div></div>
+    <div class="stat-item"><div class="num" data-target="4.9" data-suffix="★" data-decimal="1">0</div><div class="lbl">Average Rating</div></div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+  </div>
+</section>
+
+<section id="solutions" style="background:linear-gradient(180deg,var(--black),var(--dark));">
+  <div class="center"><span class="section-label reveal">Solutions</span><h2 class="section-title reveal">Built for Every Stakeholder</h2><p class="section-sub reveal">One platform, multiple roles. Everyone gets exactly what they need.</p></div>
+  <div class="for-grid">
+    <div class="for-card reveal"><div class="for-card-icon">🏢</div><h3>PG Owners & Operators</h3><ul><li>End-to-end tenant lifecycle management</li><li>Automated rent collection & reminders</li><li>Digital police verification & e-agreements</li><li>Maintenance ticket management</li><li>AI-powered occupancy analytics</li><li>Utility bill splitting & tracking</li></ul></div>
+    <div class="for-card reveal"><div class="for-card-icon">🎓</div><h3>Students & Tenants</h3><ul><li>Seamless digital onboarding & ID cards</li><li>Online rent payment & receipts</li><li>Room swap & maintenance requests</li><li>Washroom slot booking</li><li>Utility bill tracking</li><li>Compliance & e-agreements</li></ul></div>
+    <div class="for-card reveal"><div class="for-card-icon">📚</div><h3>Tuition & Coaching Institutes</h3><ul><li>Digital attendance & homework tracking</li><li>Exam scheduling & result sharing</li><li>Live & recorded lecture access</li><li>Parent communication portal</li><li>Fee collection & concession management</li><li>Student performance analytics</li></ul></div>
+    <div class="for-card reveal"><div class="for-card-icon">👨‍👩‍👧</div><h3>Parents</h3><ul><li>Real-time attendance notifications</li><li>Homework & exam updates</li><li>Fee payment portal</li><li>Direct teacher communication</li><li>Event calendar & gallery access</li><li>Child performance dashboards</li></ul></div>
+  </div>
+</section>
+
+<section id="features" style="background:var(--black);">
+  <div class="center"><span class="section-label reveal">Features</span><h2 class="section-title reveal">Everything You Need, Nothing You Don't</h2><p class="section-sub reveal">Powerful tools designed to eliminate friction from housing and education management.</p></div>
+  <div class="features-grid">
+    <div class="feat-card reveal"><div class="feat-icon">📋</div><h4>Digital Admission & Onboarding</h4><p>Paperless onboarding with digital forms, document upload, and instant verification.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🛏️</div><h4>Automated Room Allocation</h4><p>Smart matching algorithm assigns rooms based on preferences, gender, and availability.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🔧</div><h4>Maintenance Tracking</h4><p>Tenants raise tickets, staff gets notified, resolution tracked in real time.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">💬</div><h4>Centralized Communication</h4><p>One platform for all announcements, notices, and chats.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🤖</div><h4>AI Analytics & Reporting</h4><p>Data-driven insights on occupancy, revenue, attendance, and student performance.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🍽️</div><h4>Digital Cafeteria (Mess)</h4><p>Weekly menus, meal tracking, and dietary preferences managed digitally.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🪪</div><h4>Smart Digital IDs</h4><p>QR-code enabled digital identity cards for students, tenants, and staff.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">💰</div><h4>Fee & Rent Management</h4><p>Automated billing, payment reminders, and instant receipt generation.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">⚡</div><h4>Utility Bill Splitting</h4><p>Fair and transparent electricity, water, and internet bill distribution.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">⭐</div><h4>Tenant Rating System</h4><p>Build community trust with transparent reviews and ratings for all residents.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">📜</div><h4>Police Verification & E-Agreements</h4><p>Legally compliant digital tenancy agreements and automated police verification.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🚿</div><h4>Washroom Slot Manager</h4><p>Eliminate morning queues with timed washroom slot booking.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">🔄</div><h4>Room Swap System</h4><p>Residents request and manage room swaps through a transparent workflow.</p></div>
+    <div class="feat-card reveal"><div class="feat-icon">📊</div><h4>Attendance Management</h4><p>One-click digital attendance for classes, hostels, and coaching sessions.</p></div>
+  </div>
+</section>
+
+<section id="vision" style="background:linear-gradient(180deg,var(--black),var(--dark));">
+  <div class="center">
+    <span class="section-label reveal">Ecosystem</span>
+    <h2 class="section-title reveal">An App for Every Role</h2>
+    <p class="section-sub reveal">Dedicated portals and dashboards designed for how each user actually works.</p>
+  </div>
+  <div class="eco-grid">
+    <div class="eco-card reveal"><div class="eco-phone">🏠</div><div class="eco-body"><h4>PG Owner Portal</h4><p>Full control over properties, tenants, revenue, cafeteria, and operations.</p><div class="eco-tags"><span class="eco-tag">Tenant Mgmt</span><span class="eco-tag">Rent Collection</span><span class="eco-tag">Analytics</span><span class="eco-tag">Cafeteria</span></div></div></div>
+    <div class="eco-card reveal"><div class="eco-phone">🎒</div><div class="eco-body"><h4>Student Portal</h4><p>Live classes, recordings, scoreboard, and doubt sessions.</p><div class="eco-tags"><span class="eco-tag">Live Class</span><span class="eco-tag">Scoreboard</span><span class="eco-tag">Doubts</span><span class="eco-tag">Resources</span></div></div></div>
+    <div class="eco-card reveal"><div class="eco-phone">👩‍🏫</div><div class="eco-body"><h4>Teacher Portal</h4><p>Mark attendance, assign homework, share results effortlessly.</p><div class="eco-tags"><span class="eco-tag">Attendance</span><span class="eco-tag">Homework</span><span class="eco-tag">Exams</span><span class="eco-tag">Notify</span></div></div></div>
+    <div class="eco-card reveal"><div class="eco-phone">👨‍👩‍👧</div><div class="eco-body"><h4>Parent Portal</h4><p>Stay informed about your child's progress, attendance, and fees.</p><div class="eco-tags"><span class="eco-tag">Attendance</span><span class="eco-tag">Results</span><span class="eco-tag">Fee Pay</span><span class="eco-tag">Events</span></div></div></div>
+    <div class="eco-card reveal"><div class="eco-phone">⚙️</div><div class="eco-body"><h4>Admin / Director Dashboard</h4><p>Institute-wide controls: staff, expenses, reports, gallery, and notifications.</p><div class="eco-tags"><span class="eco-tag">Reports</span><span class="eco-tag">Staff</span><span class="eco-tag">Gallery</span><span class="eco-tag">Concession</span></div></div></div>
+    <div class="eco-card reveal"><div class="eco-phone">🏨</div><div class="eco-body"><h4>Tenant Portal</h4><p>Pay rent, book washroom slots, request repairs, access mess and compliance.</p><div class="eco-tags"><span class="eco-tag">Rent Pay</span><span class="eco-tag">Room Swap</span><span class="eco-tag">Washroom</span><span class="eco-tag">Compliance</span></div></div></div>
+  </div>
+</section>
+
+<section id="pricing" style="background:var(--black);">
+  <div class="center">
+    <span class="section-label reveal">Pricing</span>
+    <h2 class="section-title reveal">Transparent, Affordable Plans</h2>
+    <p class="section-sub reveal">No hidden fees. No surprises. Cancel anytime.</p>
+    <div class="pricing-toggle reveal">
+      <span class="toggle-label active" id="toggle-left">PG / Hostel</span>
+      <div class="toggle-switch" id="pricingToggle" onclick="togglePricing()"><div class="toggle-knob"></div></div>
+      <span class="toggle-label" id="toggle-right">Tuition / Institute</span>
+    </div>
+  </div>
+  <div class="plans-grid" id="plansGrid"></div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><span class="logo-text">NexaHub</span><p>Transforming student housing and education management across India. One unified platform for everyone.</p></div>
+    <div class="footer-col"><h5>Product</h5><ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Integrations</a></li><li><a href="#">Changelog</a></li></ul></div>
+    <div class="footer-col"><h5>Solutions</h5><ul><li><a href="#">PG Management</a></li><li><a href="#">Tuition Centres</a></li><li><a href="#">Universities</a></li><li><a href="#">Rental Flats</a></li></ul></div>
+    <div class="footer-col"><h5>Company</h5><ul><li><a href="#">About Us</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>�NexaHub Projects All rights reserved.</p><p>Made with ❤️ in India</p></div>
+</footer>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <h2>Welcome Back</h2>
+    <p class="modal-sub">Select your role to access your dashboard</p>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('pg-owner',this)"><span class="r-icon">🏢</span>PG Owner</button>
+      <button class="role-btn" onclick="selectRole('tenant',this)"><span class="r-icon">🏨</span>Tenant</button>
+      <button class="role-btn" onclick="selectRole('parent',this)"><span class="r-icon">👨‍👩‍👧</span>Parent</button>
+      <button class="role-btn" onclick="selectRole('teacher',this)"><span class="r-icon">👩‍🏫</span>Teacher</button>
+      <button class="role-btn" onclick="selectRole('student',this)"><span class="r-icon">🎒</span>Student</button>
+      <button class="role-btn" onclick="selectRole('admin',this)"><span class="r-icon">⚙️</span>Admin/Director</button>
+    </div>
+    <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
+    <button class="btn-login-submit" onclick="goToDashboard()">Continue to Dashboard →</button>
+  </div>
+</div>
+
+<script>
+/* ── LOADER ── */
+window.addEventListener('load',()=>{
+  const line=document.getElementById('loaderLine');
+  const sub=document.getElementById('loaderSub');
+  const loader=document.getElementById('loader');
+  requestAnimationFrame(()=>{
+    line.classList.add('grow');
+    setTimeout(()=>sub.classList.add('show'),400);
+    setTimeout(()=>loader.classList.add('hidden'),1800);
+  });
+});
+
+/* ── SCROLL PROGRESS BAR ── */
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
+  document.getElementById('scroll-bar').style.width=pct+'%';
+},{passive:true});
+
+/* ── NAV SCROLL EFFECT ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);
+},{passive:true});
+
+/* ── HAMBURGER / MOBILE MENU ── */
+function toggleMobile(){
+  const open=document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+}
+function closeMobile(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── SCROLL REVEAL ── */
+const revealObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const siblings=Array.from(entry.target.parentElement.children);
+      const idx=siblings.indexOf(entry.target);
+      entry.target.style.transitionDelay=(idx*80)+'ms';
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+/* ── COUNTER ANIMATION ── */
+function animateCounter(el){
+  const target=parseFloat(el.dataset.target);
+  const suffix=el.dataset.suffix||'';
+  const decimal=parseInt(el.dataset.decimal)||0;
+  const duration=2000;
+  const step=16;
+  const increments=duration/step;
+  let current=0;
+  const inc=target/increments;
+  const timer=setInterval(()=>{
+    current+=inc;
+    if(current>=target){current=target;clearInterval(timer);}
+    el.textContent=decimal>0?current.toFixed(decimal)+suffix:Math.floor(current).toLocaleString()+suffix;
+  },step);
+}
+const statObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.querySelectorAll('.num').forEach(animateCounter);
+      statObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.5});
+const statsRow=document.querySelector('.stats-row');
+if(statsRow) statObserver.observe(statsRow);
+
+/* ── PRICING ── */
+const pgPlans=[
+  {name:'Starter',price:'₹17',period:'/tenant/month',features:['Digital Tenant Onboarding & Screening','Rent Collection via UPI/QR/Cards','Automatic Rent Reminders','Basic Maintenance Ticketing','Basic Tenant Database'],featured:false},
+  {name:'Professional',price:'₹20',period:'/tenant/month',features:['Everything in Starter','Utility Bill Splitting (Electricity/Water)','WhatsApp Broadcast Integration','Automated Utility Collection','Police Verification Assistance','Intelligent Roommate Matching & Swap Engine','Washroom Slot Manager','Digital Agreement Generation (E-Stamp)','Tenant Rating System','Monthly Financial Reports'],featured:true},
+  {name:'Business',price:'₹35',period:'/tenant/month',features:['Everything in Professional','Multi-property Dashboard','AI-Powered Predictive Maintenance','Mess Management with AI Waste Reduction','Advanced Analytics & Occupancy Reports','Priority Customer Support'],featured:false}
+];
+const tuitionPlans=[
+  {name:'Basic',price:'₹20',period:'/student/month',features:['Student Database Management','Smart Digital IDs & Access Control','Assign Homework','Schedule Exam','Share Exam Results','Basic Communication (Push Notifications)'],featured:false},
+  {name:'Professional',price:'₹23',period:'/student/month',features:['Everything in Basic','Live Classes Integration','Mark Attendance (Digital)','Student Absent List Reports','Doubts Solving Forum','Extra Resources & Study Material','Recorded Video Lectures Library'],featured:true},
+  {name:'Business',price:'₹30',period:'/student/month',features:['Everything in Professional','Assessment & Test Analysis','Scoreboard & Leaderboards','Advanced Analytics & Reports','Priority Support & Training'],featured:false}
+];
+let isPGMode=true;
+function renderPlans(){
+  const plans=isPGMode?pgPlans:tuitionPlans;
+  document.getElementById('plansGrid').innerHTML=plans.map(p=>`<div class="plan-card ${p.featured?'featured':''} reveal"><div class="plan-name">${p.name}</div><div class="plan-price">${p.price}<span>${p.period}</span></div><ul class="plan-features">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul><button class="btn-plan ${p.featured?'btn-plan-gold':'btn-plan-outline'}" onclick="openLogin()">${p.featured?'Start Free Trial':'Get Started'}</button></div>`).join('');
+  document.querySelectorAll('#plansGrid .reveal').forEach(el=>revealObserver.observe(el));
+}
+function togglePricing(){
+  isPGMode=!isPGMode;
+  document.getElementById('pricingToggle').classList.toggle('on',!isPGMode);
+  document.getElementById('toggle-left').classList.toggle('active',isPGMode);
+  document.getElementById('toggle-right').classList.toggle('active',!isPGMode);
+  renderPlans();
+}
+renderPlans();
+
+/* ── MODAL ── */
+let selectedRole='';
+function openLogin(){
+  document.getElementById('loginModal').classList.add('open');
+  selectedRole='';
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+}
+function closeLogin(){
+  document.getElementById('loginModal').classList.remove('open');
+}
+function selectRole(role,el){
+  selectedRole=role;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+function goToDashboard(){
+  const routeMap={'pg-owner':'pages/pg-owner/dashboard.html',tenant:'pages/tenant/dashboard.html',student:'pages/student/dashboard.html',teacher:'pages/teacher/dashboard.html',parent:'pages/parent/dashboard.html',admin:'pages/admin/dashboard.html'};
+  if(routeMap[selectedRole]) window.location.href=routeMap[selectedRole];
+}
+document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+</script>
+</body>
+</html>
