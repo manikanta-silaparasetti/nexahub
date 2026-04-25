@@ -2,8 +2,8 @@
 
 /* Navbar */
 .navbar {
-    background-color: var(--darker-bg);
-    border-bottom: 2px solid var(--primary-gold);
+    background-color: var(--sidebar);
+    border-bottom: 2px solid var(--purple);
     padding: 15px 0;
     position: sticky;
     top: 0;
@@ -22,7 +22,7 @@
 .navbar-brand {
     font-size: 28px;
     font-weight: bold;
-    color: var(--primary-gold);
+    color: var(--purple);
     text-decoration: none;
 }
 
@@ -40,14 +40,14 @@
 }
 
 .navbar-menu a:hover {
-    color: var(--primary-gold);
+    color: var(--purple);
 }
 
 /* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: var(--darker-bg);
-    border-right: 1px solid var(--border-color);
+    background-color: var(--sidebar);
+    border-right: 1px solid var(--border);
     height: calc(100vh - 70px);
     position: fixed;
     left: 0;
@@ -67,16 +67,16 @@
 .sidebar-menu a {
     display: block;
     padding: 12px 20px;
-    color: var(--gray-text);
+    color: var(--muted);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .sidebar-menu a:hover,
 .sidebar-menu a.active {
-    background-color: var(--dark-bg);
-    color: var(--primary-gold);
-    border-left: 4px solid var(--primary-gold);
+    background-color: var(--card);
+    color: var(--purple);
+    border-left: 4px solid var(--purple);
 }
 
 /* Main Content */
@@ -105,8 +105,8 @@
 }
 
 .modal-content {
-    background-color: var(--dark-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 30px;
     max-width: 500px;
@@ -124,14 +124,14 @@
 
 .modal-close {
     font-size: 28px;
-    color: var(--gray-text);
+    color: var(--muted);
     cursor: pointer;
     background: none;
     border: none;
 }
 
 .modal-close:hover {
-    color: var(--primary-gold);
+    color: var(--purple);
 }
 
 /* Notifications */
@@ -182,8 +182,8 @@
 }
 
 .stat-card {
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
-    border: 1px solid var(--border-color);
+    background: linear-gradient(135deg, var(--card) 0%, var(--dark) 100%);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 25px;
     text-align: center;
@@ -191,11 +191,11 @@
 
 .stat-card h3 {
     font-size: 36px;
-    color: var(--primary-gold);
+    color: var(--purple);
     margin-bottom: 10px;
 }
 
 .stat-card p {
-    color: var(--gray-text);
+    color: var(--muted);
     font-size: 14px;
 }

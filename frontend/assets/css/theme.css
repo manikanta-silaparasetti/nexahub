@@ -1,12 +1,16 @@
 :root {
-    --primary-gold: #c9a84c;
-    --primary-black: #0d0d0b;
-    --dark-bg: #1a1a18;
-    --darker-bg: #0d0d0b;
-    --light-text: #ffffff;
-    --gray-text: #a0a0a0;
-    --hover-gold: #d4b35c;
-    --border-color: #2a2a28;
+    --black: #0d0b14;
+    --dark: #130f1e;
+    --sidebar: #0f0c1a;
+    --card: #1a1526;
+    --card2: #1f1929;
+    --purple: #7c3aed;
+    --purple-light: #a78bfa;
+    --purple-dim: #4c1d95;
+    --white: #f0eeff;
+    --muted: #7a7490;
+    --border: rgba(124,58,237,0.15);
+    --border2: rgba(255,255,255,0.06);
     --success: #4caf50;
     --error: #f44336;
     --warning: #ff9800;
@@ -20,8 +24,8 @@
 }
 
 body {
-    font-family: 'Calibri', sans-serif;
-    background-color: var(--primary-black);
-    color: var(--light-text);
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--black);
+    color: var(--white);
     line-height: 1.6;
 }

@@ -23,8 +23,8 @@
 }
 
 .dashboard-card {
-    background-color: var(--dark-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 20px;
 }
@@ -35,12 +35,12 @@
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 .dashboard-card-title {
     font-size: 18px;
-    color: var(--primary-gold);
+    color: var(--purple);
 }
 
 .badge {
@@ -79,8 +79,8 @@
 
 .quick-action-btn {
     padding: 20px;
-    background-color: var(--darker-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--dark);
+    border: 1px solid var(--border);
     border-radius: 8px;
     text-align: center;
     cursor: pointer;
@@ -88,12 +88,12 @@
 }
 
 .quick-action-btn:hover {
-    border-color: var(--primary-gold);
+    border-color: var(--purple);
     transform: translateY(-2px);
 }
 
 .quick-action-btn i {
     font-size: 32px;
-    color: var(--primary-gold);
+    color: var(--purple);
     margin-bottom: 10px;
 }

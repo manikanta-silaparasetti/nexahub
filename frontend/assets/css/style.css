@@ -17,37 +17,37 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    font-family: 'Calibri', sans-serif;
+    font-family: 'Poppins', sans-serif;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
 }
 
 .btn-primary {
-    background-color: var(--primary-gold);
-    color: var(--primary-black);
+    background-color: var(--purple);
+    color: var(--black);
     font-weight: bold;
 }
 
 .btn-primary:hover {
-    background-color: var(--hover-gold);
+    background-color: var(--purple-light);
     transform: translateY(-2px);
 }
 
 .btn-secondary {
     background-color: transparent;
-    color: var(--primary-gold);
-    border: 2px solid var(--primary-gold);
+    color: var(--purple);
+    border: 2px solid var(--purple);
 }
 
 .btn-secondary:hover {
-    background-color: var(--primary-gold);
-    color: var(--primary-black);
+    background-color: var(--purple);
+    color: var(--black);
 }
 
 .card {
-    background-color: var(--dark-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
@@ -60,24 +60,24 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: var(--gray-text);
+    color: var(--muted);
     font-size: 14px;
 }
 
 .form-control {
     width: 100%;
     padding: 12px;
-    background-color: var(--darker-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--dark);
+    border: 1px solid var(--border);
     border-radius: 4px;
-    color: var(--light-text);
+    color: var(--white);
     font-size: 16px;
-    font-family: 'Calibri', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--primary-gold);
+    border-color: var(--purple);
 }
 
 .alert {
@@ -114,18 +114,18 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: var(--primary-gold);
+    color: var(--purple);
     margin-bottom: 15px;
 }
 
 a {
-    color: var(--primary-gold);
+    color: var(--purple);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 a:hover {
-    color: var(--hover-gold);
+    color: var(--purple-light);
 }
 
 table {
@@ -138,15 +138,15 @@ table th,
 table td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 table th {
-    background-color: var(--dark-bg);
-    color: var(--primary-gold);
+    background-color: var(--card);
+    color: var(--purple);
     font-weight: bold;
 }
 
 table tr:hover {
-    background-color: var(--dark-bg);
+    background-color: var(--card);
 }
